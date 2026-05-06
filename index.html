@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foodiez Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            fire:     '#FF6B35',
+            hot:      '#FF3D7F',
+            electric: '#38C172',
+            gold:     '#FFD23F',
+            mango:    '#FF9F1C',
+            lime:     '#7AE582',
+            sky:      '#48CAE4',
+            'app-success': '#38C172',
+            'app-bg':      '#FFF8F0',
+            'app-surface': '#FFF0E0',
+            'app-text':    '#2D1B0E',
+            'app-muted':   '#A0785A',
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            body:    ['"DM Sans"', 'sans-serif'],
+          },
+          keyframes: {
+            fadeIn:   { '0%': { opacity:'0', transform:'translateY(16px)' }, '100%': { opacity:'1', transform:'translateY(0)' } },
+            shimmer:  { '0%': { backgroundPosition:'0% center' }, '100%': { backgroundPosition:'200% center' } },
+            pulseDot: { '0%,100%': { transform:'scale(1)', opacity:'1' }, '50%': { transform:'scale(1.6)', opacity:'0.6' } },
+            spinArc:  { to: { transform:'rotate(360deg)' } },
+          },
+          animation: {
+            'fade-in':   'fadeIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards',
+            'shimmer':   'shimmer 3s linear infinite',
+            'pulse-dot': 'pulseDot 1.5s ease-in-out infinite',
+            'spin-arc':  'spinArc 0.75s linear infinite',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── CSS Variables globales ── */
+    :root {
+      --fire:#FF6B35; --hot:#FF3D7F; --electric:#38C172;
+      --gold:#FFD23F; --mango:#FF9F1C; --lime:#7AE582; --sky:#48CAE4;
+      --success:#38C172; --danger:#FF3D7F;
+      --bg:#FFF8F0; --surface:#FFF0E0;
+      --card:rgba(255,255,255,0.7); --border:rgba(255,107,53,0.15);
+      --text:#2D1B0E; --muted:#A0785A;
+    }
+
+    /* ── Fond dégradé mesh ── */
+    body {
+      background-color: #FFF8F0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 10% -10%, rgba(255,107,53,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(255,61,127,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(72,202,228,0.08) 0%, transparent 70%);
+    }
+
+    /* ── Scrollbar personnalisée ── */
+    ::-webkit-scrollbar { width: 5px }
+    ::-webkit-scrollbar-track { background: #FFF0E0 }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#FF6B35,#FF3D7F); border-radius: 4px }
+
+    /* ── SPA : afficher/cacher les pages ── */
+    .page { display: none }
+    .page.active { display: block }
+
+    /* ── Lien de nav actif ── */
+    .nav-link.active {
+      background: linear-gradient(135deg, #FF6B35, #FF3D7F);
+      color: #fff !important;
+      box-shadow: 0 0 20px rgba(255,107,53,.35);
+    }
+
+    /* ── Textes dégradés ── */
+    .g-fire    { background: linear-gradient(135deg,#FF6B35,#FF9F1C 55%,#FFD23F); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .g-gold    { background: linear-gradient(135deg,#FFD23F,#FF9F1C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .g-purple  { background: linear-gradient(135deg,#48CAE4,#38C172); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
+    .g-shimmer { background: linear-gradient(90deg,#FF6B35,#FF3D7F,#FFD23F,#48CAE4,#FF6B35); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s linear infinite }
+
+    @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
+
+    /* ── Spinner de chargement (généré par JS) ── */
+    .spinner { width:36px; height:36px; border:3px solid rgba(255,107,53,.15); border-top-color:#FF6B35; border-radius:50%; animation:spinArc .75s linear infinite }
+    @keyframes spinArc { to{transform:rotate(360deg)} }
+
+    /* ── Animation d'apparition ── */
+    .fade-in { animation: fadeIn .45s cubic-bezier(.16,1,.3,1) forwards }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── Card commande ── */
+    .order-card {
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(255,107,53,.15);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s;
+    }
+    .order-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(255,107,53,.20), 0 0 0 1px rgba(255,107,53,.30) }
+
+    /* ── Card statistique ── */
+    .stat-card {
+      background: rgba(255,255,255,.80);
+      border: 1px solid rgba(255,107,53,.15);
+      border-radius: 20px;
+      padding: 22px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s cubic-bezier(.16,1,.3,1);
+    }
+    .stat-card:hover { transform: translateY(-5px) }
+    .stat-card .orb { position:absolute; width:90px; height:90px; border-radius:50%; filter:blur(35px); opacity:.35; top:-15px; right:-15px; pointer-events:none }
+
+    /* ── Badges de statut ── */
+    .badge-pending   { background:rgba(255,210,63,.18);  color:#CC8800; border:1px solid rgba(255,210,63,.45) }
+    .badge-accepted  { background:rgba(56,193,114,.15);  color:#1A8A4A; border:1px solid rgba(56,193,114,.40) }
+    .badge-completed { background:rgba(72,202,228,.15);  color:#007EA0; border:1px solid rgba(72,202,228,.40) }
+    .badge-rejected  { background:rgba(255,61,127,.12);  color:#CC1F5A; border:1px solid rgba(255,61,127,.35) }
+
+    /* ── Champs de formulaire ── */
+    .input-field {
+      background: rgba(255,255,255,.85);
+      border: 1.5px solid rgba(255,107,53,.20);
+      color: #2D1B0E;
+      border-radius: 12px;
+      padding: 11px 16px;
+      width: 100%;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input-field:focus { border-color:#FF6B35; box-shadow:0 0 0 3px rgba(255,107,53,.15) }
+    .input-field::placeholder { color: #A0785A }
+    select.input-field { appearance: none; cursor: pointer }
+
+    /* ── Boutons ── */
+    .btn-primary { background:linear-gradient(135deg,#FF6B35,#FF3D7F); color:#fff; font-weight:600; border-radius:12px; padding:11px 20px; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; transition:transform .2s,box-shadow .2s }
+    .btn-primary:hover { transform:scale(1.02); box-shadow:0 6px 24px rgba(255,61,127,.40) }
+    .btn-ghost { border:1.5px solid rgba(255,107,53,.25); color:#A0785A; border-radius:10px; padding:6px 14px; font-size:13px; transition:all .2s; cursor:pointer; font-family:'DM Sans',sans-serif; background:transparent }
+    .btn-ghost:hover { border-color:#FF6B35; color:#FF6B35; background:rgba(255,107,53,.08) }
+  </style>
+</head>
+
+<body class="font-body min-h-screen flex flex-col text-app-text">
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="sticky top-0 z-50 backdrop-blur-xl border-b" style="background:rgba(255,248,240,0.85);border-color:rgba(255,107,53,0.15)">
+    <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base shadow-lg"
+             style="background:linear-gradient(135deg,#FF6B35,#FF3D7F);box-shadow:0 0 18px rgba(255,107,53,.45);">
+          🍽️
+        </div>
+        <span class="font-display text-xl font-bold g-shimmer">Foodiez</span>
+      </div>
+
+      <!-- Nav pills — onclick appelle showPage() de personne4.js -->
+      <div class="flex items-center gap-1 rounded-xl p-1" style="background:rgba(255,255,255,0.6);border:1px solid rgba(255,107,53,0.15)">
+        <button onclick="showPage('dashboard')" data-page="dashboard"
+          class="nav-link active text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 text-app-muted hover:text-app-text">
+          Dashboard
+        </button>
+        <button onclick="showPage('orders')" data-page="orders"
+          class="nav-link text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 text-app-muted hover:text-app-text">
+          Commandes
+        </button>
+        <button onclick="showPage('new-order')" data-page="new-order"
+          class="nav-link text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 text-app-muted hover:text-app-text">
+          + Nouvelle
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══ MAIN ══ -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
+
+    <!-- ── PAGE DASHBOARD ── -->
+    <section id="page-dashboard" class="page active animate-fade-in">
+
+      <div class="flex items-start justify-between mb-10">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+               style="background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.30)">
+            <span class="w-1.5 h-1.5 rounded-full bg-fire animate-pulse-dot"></span>
+            <span class="text-fire text-[11px] font-bold tracking-widest uppercase">Vue en temps réel</span>
+          </div>
+          <h1 class="font-display text-5xl font-bold leading-tight g-fire">Dashboard</h1>
+          <p class="text-sm mt-2 text-app-muted">Aperçu complet de vos commandes du jour</p>
+        </div>
+        <div class="hidden sm:flex flex-col items-end gap-1">
+          <span class="text-xs font-medium text-app-muted">Aujourd'hui</span>
+          <span class="text-sm font-semibold text-app-text" id="today-date"></span>
+        </div>
+      </div>
+
+      <!-- Stats (remplies par personne2.js → loadDashboard) -->
+      <div id="stats-container" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+        <div class="col-span-2 md:col-span-5 flex items-center justify-center py-12">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- Dernières commandes (remplies par personne2.js → loadDashboard) -->
+      <div class="flex items-center gap-4 mb-6">
+        <h2 class="font-display text-xl font-bold whitespace-nowrap text-app-text">Dernières commandes</h2>
+        <div class="flex-1 h-px" style="background:linear-gradient(to right, transparent, rgba(255,107,53,0.2), transparent)"></div>
+      </div>
+      <div id="recent-orders" class="space-y-3"></div>
+    </section>
+
+    <!-- ── PAGE COMMANDES ── -->
+    <section id="page-orders" class="page animate-fade-in">
+
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+               style="background:rgba(255,210,63,0.15);border:1px solid rgba(255,210,63,0.40)">
+            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+            <span class="text-gold text-[11px] font-bold tracking-widest uppercase">Gestion des commandes</span>
+          </div>
+          <h1 class="font-display text-5xl font-bold g-gold">Commandes</h1>
+          <p class="text-sm mt-2 text-app-muted">Gérez, filtrez et modifiez vos commandes</p>
+        </div>
+
+        <!-- Filtre — onchange appelle filterOrders() de personne4.js -->
+        <div class="flex items-center gap-2 rounded-xl px-4 py-2.5"
+             style="background:rgba(255,255,255,0.7);border:1px solid rgba(255,107,53,0.18)">
+          <span class="text-xs font-medium text-app-muted">Statut :</span>
+          <select id="filter-select" onchange="filterOrders()"
+            class="text-sm font-medium border-none outline-none cursor-pointer appearance-none pr-2 bg-transparent text-app-text">
+            <option value="all"       style="background:#FFF0E0">Toutes</option>
+            <option value="pending"   style="background:#FFF0E0">En attente</option>
+            <option value="accepted"  style="background:#FFF0E0">Acceptées</option>
+            <option value="completed" style="background:#FFF0E0">Terminées</option>
+            <option value="rejected"  style="background:#FFF0E0">Rejetées</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grille commandes (remplie par personne2.js → renderOrders) -->
+      <div id="orders-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="col-span-3 flex items-center justify-center py-12">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE NOUVELLE COMMANDE ── -->
+    <section id="page-new-order" class="page animate-fade-in">
+      <div class="max-w-xl mx-auto">
+
+        <div class="mb-10 text-center">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+               style="background:rgba(72,202,228,0.12);border:1px solid rgba(72,202,228,0.35)">
+            <span class="w-1.5 h-1.5 rounded-full bg-electric"></span>
+            <span class="text-[11px] font-bold tracking-widest uppercase" style="color:#007EA0">Formulaire de commande</span>
+          </div>
+          <h1 class="font-display text-5xl font-bold g-purple">Nouvelle commande</h1>
+          <p class="text-sm mt-2 text-app-muted">Remplissez les informations ci-dessous</p>
+        </div>
+
+        <!-- Formulaire — submit/reset appelés depuis personne4.js -->
+        <div class="rounded-3xl p-8 backdrop-blur-xl"
+             style="background:rgba(255,255,255,0.80);border:1px solid rgba(255,107,53,0.18);box-shadow:0 0 60px rgba(255,107,53,.10),0 0 0 1px rgba(255,210,63,.15)">
+
+          <!-- Messages feedback -->
+          <div id="success-msg"
+               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-app-success/10 text-app-success border border-app-success/25">
+            ✅ Commande créée avec succès !
+          </div>
+          <div id="form-error-msg"
+               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 border border-red-500/25">
+            ❌ Erreur lors de la création.
+          </div>
+
+          <div class="space-y-6">
+            <!-- Nom client -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
+                Nom du client
+              </label>
+              <input type="text" id="input-name" placeholder="Ex: Ahmed Benali" class="input-field" />
+            </div>
+
+            <!-- Articles -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
+                Articles commandés
+              </label>
+              <input type="text" id="input-items" placeholder="Ex: Pizza, Soda, Frites" class="input-field" />
+              <p class="text-xs mt-1.5 text-app-muted">Séparez les articles par des virgules</p>
+            </div>
+
+            <!-- Prix -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
+                Prix total (MAD)
+              </label>
+              <div class="relative">
+                <input type="number" id="input-price" placeholder="0" min="0" class="input-field pr-16" />
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-app-muted">MAD</span>
+              </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="flex gap-3 pt-2">
+              <button onclick="submitOrder()" class="btn-primary flex-1">
+                Créer la commande →
+              </button>
+              <button onclick="resetForm()" class="btn-ghost px-5 py-3 text-sm">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-xs mt-4 text-app-muted">
+          La commande sera créée avec le statut
+          <span class="font-bold text-gold">En attente</span>
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="border-t py-6 mt-6" style="background:rgba(255,248,240,0.5);border-color:rgba(255,107,53,0.12)">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs"
+             style="background:linear-gradient(135deg,#FF6B35,#FF3D7F)">🍽️</div>
+        <span class="text-sm text-app-muted">
+          <span id="footer-name" class="font-semibold text-app-text">Foodiez</span>
+          — Gestion de restaurant
+        </span>
+      </div>
+      <a id="footer-email" href="#" class="text-sm text-app-muted hover:text-fire transition-colors">
+        contact@foodiez.ma
+      </a>
+    </div>
+  </footer>
+
+  <!-- ══ SCRIPTS — Ordre important ! ══
+       1. personne3.js  → API & State    (variables globales + fetch)
+       2. personne2.js  → Rendering      (dépend de personne3.js)
+       3. personne4.js  → SPA & Actions  (dépend de personne3.js + personne2.js)
+  -->
+  <script src="personne3.js"></script>
+  <script src="personne2.js"></script>
+  <script src="personne4.js"></script>
+
+  <!-- Date du jour -->
+  <script>
+    const el = document.getElementById('today-date');
+    if (el) el.textContent = new Date().toLocaleDateString('fr-FR', {
+      weekday: 'long', day: 'numeric', month: 'long'
+    });
+  </script>
+</body>
+</html>
