@@ -21,10 +21,10 @@
             lime:     '#7AE582',
             sky:      '#48CAE4',
             'app-success': '#38C172',
-            'app-bg':      '#FFF8F0',
-            'app-surface': '#FFF0E0',
-            'app-text':    '#2D1B0E',
-            'app-muted':   '#A0785A',
+            'app-bg':      '#0D0805',
+            'app-surface': '#1A1008',
+            'app-text':    '#F0DEC8',
+            'app-muted':   '#7A5C42',
           },
           fontFamily: {
             display: ['"Space Grotesk"', 'sans-serif'],
@@ -48,71 +48,68 @@
   </script>
 
   <style>
-    /* ── CSS Variables globales ── */
-    :root {
-      --fire:#FF6B35; --hot:#FF3D7F; --electric:#38C172;
-      --gold:#FFD23F; --mango:#FF9F1C; --lime:#7AE582; --sky:#48CAE4;
-      --success:#38C172; --danger:#FF3D7F;
-      --bg:#FFF8F0; --surface:#FFF0E0;
-      --card:rgba(255,255,255,0.7); --border:rgba(255,107,53,0.15);
-      --text:#2D1B0E; --muted:#A0785A;
-    }
-
-    /* ── Fond dégradé mesh ── */
+    /* ── Dark mesh background ── */
     body {
-      background-color: #FFF8F0;
+      background-color: #0D0805;
       background-image:
-        radial-gradient(ellipse 80% 60% at 10% -10%, rgba(255,107,53,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(255,61,127,0.10) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(72,202,228,0.08) 0%, transparent 70%);
+        radial-gradient(ellipse 80% 60% at 10% -10%, rgba(255,107,53,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(255,61,127,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(72,202,228,0.07) 0%, transparent 70%);
     }
 
-    /* ── Scrollbar personnalisée ── */
+    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 5px }
-    ::-webkit-scrollbar-track { background: #FFF0E0 }
+    ::-webkit-scrollbar-track { background: #1A1008 }
     ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#FF6B35,#FF3D7F); border-radius: 4px }
 
-    /* ── SPA : afficher/cacher les pages ── */
+    /* ── SPA routing — toggled by app.js ── */
     .page { display: none }
     .page.active { display: block }
 
-    /* ── Lien de nav actif ── */
+    /* ── Nav active state — added by app.js ── */
     .nav-link.active {
       background: linear-gradient(135deg, #FF6B35, #FF3D7F);
       color: #fff !important;
-      box-shadow: 0 0 20px rgba(255,107,53,.35);
+      box-shadow: 0 0 20px rgba(255,107,53,.45);
     }
 
-    /* ── Textes dégradés ── */
-    .g-fire    { background: linear-gradient(135deg,#FF6B35,#FF9F1C 55%,#FFD23F); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
-    .g-gold    { background: linear-gradient(135deg,#FFD23F,#FF9F1C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
-    .g-purple  { background: linear-gradient(135deg,#48CAE4,#38C172); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text }
-    .g-shimmer { background: linear-gradient(90deg,#FF6B35,#FF3D7F,#FFD23F,#48CAE4,#FF6B35); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 3s linear infinite }
-
+    /* ── Shimmer gradient text ── */
+    .g-shimmer {
+      background: linear-gradient(90deg,#FF6B35,#FF3D7F,#FFD23F,#48CAE4,#FF6B35);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
     @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
 
-    /* ── Spinner de chargement (généré par JS) ── */
-    .spinner { width:36px; height:36px; border:3px solid rgba(255,107,53,.15); border-top-color:#FF6B35; border-radius:50%; animation:spinArc .75s linear infinite }
+    /* ── Spinner ── */
+    .spinner {
+      width:36px; height:36px;
+      border:3px solid rgba(255,107,53,.12);
+      border-top-color:#FF6B35;
+      border-radius:50%;
+      animation:spinArc .75s linear infinite;
+    }
     @keyframes spinArc { to{transform:rotate(360deg)} }
 
-    /* ── Animation d'apparition ── */
-    .fade-in { animation: fadeIn .45s cubic-bezier(.16,1,.3,1) forwards }
-    @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
-    /* ── Card commande ── */
+    /* ── Dynamic card & badge classes — rendered by app.js ── */
     .order-card {
-      background: rgba(255,255,255,.75);
-      border: 1px solid rgba(255,107,53,.15);
+      background: rgba(20,11,4,0.80);
+      border: 1px solid rgba(255,107,53,0.18);
       border-radius: 16px;
       backdrop-filter: blur(12px);
       transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s;
     }
-    .order-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(255,107,53,.20), 0 0 0 1px rgba(255,107,53,.30) }
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(255,107,53,.22), 0 0 0 1px rgba(255,107,53,.35);
+    }
 
-    /* ── Card statistique ── */
     .stat-card {
-      background: rgba(255,255,255,.80);
-      border: 1px solid rgba(255,107,53,.15);
+      background: rgba(20,11,4,0.85);
+      border: 1px solid rgba(255,107,53,0.18);
       border-radius: 20px;
       padding: 22px;
       backdrop-filter: blur(12px);
@@ -121,56 +118,36 @@
       transition: transform .25s cubic-bezier(.16,1,.3,1);
     }
     .stat-card:hover { transform: translateY(-5px) }
-    .stat-card .orb { position:absolute; width:90px; height:90px; border-radius:50%; filter:blur(35px); opacity:.35; top:-15px; right:-15px; pointer-events:none }
-
-    /* ── Badges de statut ── */
-    .badge-pending   { background:rgba(255,210,63,.18);  color:#CC8800; border:1px solid rgba(255,210,63,.45) }
-    .badge-accepted  { background:rgba(56,193,114,.15);  color:#1A8A4A; border:1px solid rgba(56,193,114,.40) }
-    .badge-completed { background:rgba(72,202,228,.15);  color:#007EA0; border:1px solid rgba(72,202,228,.40) }
-    .badge-rejected  { background:rgba(255,61,127,.12);  color:#CC1F5A; border:1px solid rgba(255,61,127,.35) }
-
-    /* ── Champs de formulaire ── */
-    .input-field {
-      background: rgba(255,255,255,.85);
-      border: 1.5px solid rgba(255,107,53,.20);
-      color: #2D1B0E;
-      border-radius: 12px;
-      padding: 11px 16px;
-      width: 100%;
-      outline: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      transition: border-color .2s, box-shadow .2s;
+    .stat-card .orb {
+      position:absolute; width:90px; height:90px; border-radius:50%;
+      filter:blur(35px); opacity:.40; top:-15px; right:-15px; pointer-events:none;
     }
-    .input-field:focus { border-color:#FF6B35; box-shadow:0 0 0 3px rgba(255,107,53,.15) }
-    .input-field::placeholder { color: #A0785A }
-    select.input-field { appearance: none; cursor: pointer }
 
-    /* ── Boutons ── */
-    .btn-primary { background:linear-gradient(135deg,#FF6B35,#FF3D7F); color:#fff; font-weight:600; border-radius:12px; padding:11px 20px; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; transition:transform .2s,box-shadow .2s }
-    .btn-primary:hover { transform:scale(1.02); box-shadow:0 6px 24px rgba(255,61,127,.40) }
-    .btn-ghost { border:1.5px solid rgba(255,107,53,.25); color:#A0785A; border-radius:10px; padding:6px 14px; font-size:13px; transition:all .2s; cursor:pointer; font-family:'DM Sans',sans-serif; background:transparent }
-    .btn-ghost:hover { border-color:#FF6B35; color:#FF6B35; background:rgba(255,107,53,.08) }
+    /* ── Dark-adjusted badges ── */
+    .badge-pending   { background:rgba(255,210,63,.12);  color:#FFD23F; border:1px solid rgba(255,210,63,.30) }
+    .badge-accepted  { background:rgba(56,193,114,.10);  color:#4ADE80; border:1px solid rgba(56,193,114,.28) }
+    .badge-completed { background:rgba(72,202,228,.10);  color:#48CAE4; border:1px solid rgba(72,202,228,.28) }
+    .badge-rejected  { background:rgba(255,61,127,.10);  color:#FF6B9D; border:1px solid rgba(255,61,127,.28) }
   </style>
 </head>
 
 <body class="font-body min-h-screen flex flex-col text-app-text">
 
   <!-- ══ NAVBAR ══ -->
-  <nav class="sticky top-0 z-50 backdrop-blur-xl border-b" style="background:rgba(255,248,240,0.85);border-color:rgba(255,107,53,0.15)">
+  <nav class="sticky top-0 z-50 backdrop-blur-xl border-b border-[rgba(255,107,53,0.12)] bg-[rgba(13,8,5,0.88)]">
     <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
 
       <!-- Logo -->
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base shadow-lg"
-             style="background:linear-gradient(135deg,#FF6B35,#FF3D7F);box-shadow:0 0 18px rgba(255,107,53,.45);">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base"
+             style="background:linear-gradient(135deg,#FF6B35,#FF3D7F);box-shadow:0 0 22px rgba(255,107,53,.55);">
           🍽️
         </div>
         <span class="font-display text-xl font-bold g-shimmer">Foodiez</span>
       </div>
 
-      <!-- Nav pills — onclick appelle showPage() de personne4.js -->
-      <div class="flex items-center gap-1 rounded-xl p-1" style="background:rgba(255,255,255,0.6);border:1px solid rgba(255,107,53,0.15)">
+      <!-- Nav pills -->
+      <div class="flex items-center gap-1 rounded-xl p-1 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,107,53,0.14)]">
         <button onclick="showPage('dashboard')" data-page="dashboard"
           class="nav-link active text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 text-app-muted hover:text-app-text">
           Dashboard
@@ -195,12 +172,11 @@
 
       <div class="flex items-start justify-between mb-10">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-               style="background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.30)">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 bg-[rgba(255,107,53,0.10)] border border-[rgba(255,107,53,0.28)]">
             <span class="w-1.5 h-1.5 rounded-full bg-fire animate-pulse-dot"></span>
             <span class="text-fire text-[11px] font-bold tracking-widest uppercase">Vue en temps réel</span>
           </div>
-          <h1 class="font-display text-5xl font-bold leading-tight g-fire">Dashboard</h1>
+          <h1 class="font-display text-5xl font-bold leading-tight bg-gradient-to-br from-[#FF6B35] via-[#FF9F1C] to-[#FFD23F] bg-clip-text text-transparent">Dashboard</h1>
           <p class="text-sm mt-2 text-app-muted">Aperçu complet de vos commandes du jour</p>
         </div>
         <div class="hidden sm:flex flex-col items-end gap-1">
@@ -209,17 +185,17 @@
         </div>
       </div>
 
-      <!-- Stats (remplies par personne2.js → loadDashboard) -->
+      <!-- Stats -->
       <div id="stats-container" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
         <div class="col-span-2 md:col-span-5 flex items-center justify-center py-12">
           <div class="spinner"></div>
         </div>
       </div>
 
-      <!-- Dernières commandes (remplies par personne2.js → loadDashboard) -->
+      <!-- Dernières commandes -->
       <div class="flex items-center gap-4 mb-6">
         <h2 class="font-display text-xl font-bold whitespace-nowrap text-app-text">Dernières commandes</h2>
-        <div class="flex-1 h-px" style="background:linear-gradient(to right, transparent, rgba(255,107,53,0.2), transparent)"></div>
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-[rgba(255,107,53,0.25)] to-transparent"></div>
       </div>
       <div id="recent-orders" class="space-y-3"></div>
     </section>
@@ -229,31 +205,29 @@
 
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-               style="background:rgba(255,210,63,0.15);border:1px solid rgba(255,210,63,0.40)">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 bg-[rgba(255,210,63,0.10)] border border-[rgba(255,210,63,0.30)]">
             <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
             <span class="text-gold text-[11px] font-bold tracking-widest uppercase">Gestion des commandes</span>
           </div>
-          <h1 class="font-display text-5xl font-bold g-gold">Commandes</h1>
+          <h1 class="font-display text-5xl font-bold bg-gradient-to-br from-[#FFD23F] to-[#FF9F1C] bg-clip-text text-transparent">Commandes</h1>
           <p class="text-sm mt-2 text-app-muted">Gérez, filtrez et modifiez vos commandes</p>
         </div>
 
-        <!-- Filtre — onchange appelle filterOrders() de personne4.js -->
-        <div class="flex items-center gap-2 rounded-xl px-4 py-2.5"
-             style="background:rgba(255,255,255,0.7);border:1px solid rgba(255,107,53,0.18)">
+        <!-- Filtre -->
+        <div class="flex items-center gap-2 rounded-xl px-4 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,107,53,0.16)]">
           <span class="text-xs font-medium text-app-muted">Statut :</span>
           <select id="filter-select" onchange="filterOrders()"
             class="text-sm font-medium border-none outline-none cursor-pointer appearance-none pr-2 bg-transparent text-app-text">
-            <option value="all"       style="background:#FFF0E0">Toutes</option>
-            <option value="pending"   style="background:#FFF0E0">En attente</option>
-            <option value="accepted"  style="background:#FFF0E0">Acceptées</option>
-            <option value="completed" style="background:#FFF0E0">Terminées</option>
-            <option value="rejected"  style="background:#FFF0E0">Rejetées</option>
+            <option value="all"       style="background:#1A1008;color:#F0DEC8">Toutes</option>
+            <option value="pending"   style="background:#1A1008;color:#F0DEC8">En attente</option>
+            <option value="accepted"  style="background:#1A1008;color:#F0DEC8">Acceptées</option>
+            <option value="completed" style="background:#1A1008;color:#F0DEC8">Terminées</option>
+            <option value="rejected"  style="background:#1A1008;color:#F0DEC8">Rejetées</option>
           </select>
         </div>
       </div>
 
-      <!-- Grille commandes (remplie par personne2.js → renderOrders) -->
+      <!-- Grille commandes -->
       <div id="orders-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div class="col-span-3 flex items-center justify-center py-12">
           <div class="spinner"></div>
@@ -266,26 +240,25 @@
       <div class="max-w-xl mx-auto">
 
         <div class="mb-10 text-center">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-               style="background:rgba(72,202,228,0.12);border:1px solid rgba(72,202,228,0.35)">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 bg-[rgba(72,202,228,0.08)] border border-[rgba(72,202,228,0.28)]">
             <span class="w-1.5 h-1.5 rounded-full bg-electric"></span>
-            <span class="text-[11px] font-bold tracking-widest uppercase" style="color:#007EA0">Formulaire de commande</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-sky">Formulaire de commande</span>
           </div>
-          <h1 class="font-display text-5xl font-bold g-purple">Nouvelle commande</h1>
+          <h1 class="font-display text-5xl font-bold bg-gradient-to-br from-[#48CAE4] to-[#38C172] bg-clip-text text-transparent">Nouvelle commande</h1>
           <p class="text-sm mt-2 text-app-muted">Remplissez les informations ci-dessous</p>
         </div>
 
-        <!-- Formulaire — submit/reset appelés depuis personne4.js -->
-        <div class="rounded-3xl p-8 backdrop-blur-xl"
-             style="background:rgba(255,255,255,0.80);border:1px solid rgba(255,107,53,0.18);box-shadow:0 0 60px rgba(255,107,53,.10),0 0 0 1px rgba(255,210,63,.15)">
+        <!-- Formulaire -->
+        <div class="rounded-3xl p-8 backdrop-blur-xl bg-[rgba(20,11,4,0.82)] border border-[rgba(255,107,53,0.18)]"
+             style="box-shadow:0 0 60px rgba(255,107,53,.12),0 0 0 1px rgba(255,210,63,.10)">
 
           <!-- Messages feedback -->
           <div id="success-msg"
-               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-app-success/10 text-app-success border border-app-success/25">
+               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-[rgba(56,193,114,0.10)] text-[#4ADE80] border border-[rgba(56,193,114,0.25)]">
             ✅ Commande créée avec succès !
           </div>
           <div id="form-error-msg"
-               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 border border-red-500/25">
+               class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-[rgba(255,61,127,0.10)] text-[#FF6B9D] border border-[rgba(255,61,127,0.25)]">
             ❌ Erreur lors de la création.
           </div>
 
@@ -295,7 +268,12 @@
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
                 Nom du client
               </label>
-              <input type="text" id="input-name" placeholder="Ex: Ahmed Benali" class="input-field" />
+              <input
+                type="text"
+                id="input-name"
+                placeholder="Ex: Ahmed Benali"
+                class="w-full bg-[rgba(255,255,255,0.05)] border-[1.5px] border-[rgba(255,107,53,0.18)] text-app-text rounded-xl px-4 py-[11px] outline-none font-body text-sm transition-all duration-200 placeholder:text-app-muted focus:border-fire focus:shadow-[0_0_0_3px_rgba(255,107,53,0.18)]"
+              />
             </div>
 
             <!-- Articles -->
@@ -303,7 +281,12 @@
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
                 Articles commandés
               </label>
-              <input type="text" id="input-items" placeholder="Ex: Pizza, Soda, Frites" class="input-field" />
+              <input
+                type="text"
+                id="input-items"
+                placeholder="Ex: Pizza, Soda, Frites"
+                class="w-full bg-[rgba(255,255,255,0.05)] border-[1.5px] border-[rgba(255,107,53,0.18)] text-app-text rounded-xl px-4 py-[11px] outline-none font-body text-sm transition-all duration-200 placeholder:text-app-muted focus:border-fire focus:shadow-[0_0_0_3px_rgba(255,107,53,0.18)]"
+              />
               <p class="text-xs mt-1.5 text-app-muted">Séparez les articles par des virgules</p>
             </div>
 
@@ -313,17 +296,29 @@
                 Prix total (MAD)
               </label>
               <div class="relative">
-                <input type="number" id="input-price" placeholder="0" min="0" class="input-field pr-16" />
+                <input
+                  type="number"
+                  id="input-price"
+                  placeholder="0"
+                  min="0"
+                  class="w-full bg-[rgba(255,255,255,0.05)] border-[1.5px] border-[rgba(255,107,53,0.18)] text-app-text rounded-xl px-4 py-[11px] pr-16 outline-none font-body text-sm transition-all duration-200 placeholder:text-app-muted focus:border-fire focus:shadow-[0_0_0_3px_rgba(255,107,53,0.18)]"
+                />
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-app-muted">MAD</span>
               </div>
             </div>
 
             <!-- Boutons -->
             <div class="flex gap-3 pt-2">
-              <button onclick="submitOrder()" class="btn-primary flex-1">
+              <button
+                onclick="submitOrder()"
+                class="flex-1 bg-gradient-to-br from-[#FF6B35] to-[#FF3D7F] text-white font-semibold rounded-xl px-5 py-[11px] border-none cursor-pointer font-body text-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_6px_24px_rgba(255,61,127,0.45)]"
+              >
                 Créer la commande →
               </button>
-              <button onclick="resetForm()" class="btn-ghost px-5 py-3 text-sm">
+              <button
+                onclick="resetForm()"
+                class="border-[1.5px] border-[rgba(255,107,53,0.22)] text-app-muted rounded-xl px-5 py-3 text-sm transition-all duration-200 cursor-pointer font-body bg-transparent hover:border-fire hover:text-fire hover:bg-[rgba(255,107,53,0.10)]"
+              >
                 Reset
               </button>
             </div>
@@ -340,7 +335,7 @@
   </main>
 
   <!-- ══ FOOTER ══ -->
-  <footer class="border-t py-6 mt-6" style="background:rgba(255,248,240,0.5);border-color:rgba(255,107,53,0.12)">
+  <footer class="border-t border-[rgba(255,107,53,0.10)] py-6 mt-6 bg-[rgba(13,8,5,0.60)]">
     <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center gap-2">
         <div class="w-6 h-6 rounded-lg flex items-center justify-center text-xs"
@@ -356,7 +351,6 @@
     </div>
   </footer>
 
-  
   <script src="app.js"></script>
 
   <!-- Date du jour -->
