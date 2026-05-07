@@ -130,3 +130,268 @@ async function postOrder(newOrder) {
     return created;
   }
 }
+
+
+
+/**
+ * Retourne le HTML d'un spinner de chargement.
+ * @param {number} colspan - nombre de colonnes à occuper (pour la grille)
+ */
+function spinnerHTML(colspan = 1) {
+  return `
+    <div class="flex items-center justify-center py-12 col-span-${colspan}">
+      <div class="spinner"></div>
+    </div>`;
+}
+
+/**
+ * Retourne le HTML d'un message d'erreur.
+ * @param {string} msg - message à afficher
+ */
+function errorHTML(msg = "Impossible de contacter l'API. Assurez-vous que JSON Server est démarré.") {
+  return `
+    <div class="col-span-3 py-10 text-center">
+      <div class="text-4xl mb-3">⚠️</div>
+      <p class="text-red-400 font-medium">${msg}</p>
+      <p class="text-app-muted text-sm mt-2">Lance : <code class="text-fire">json-server --watch db.json</code></p>
+    </div>`;
+}
+
+/**
+ * Retourne la classe CSS du badge selon le statut.
+ * @param {string} status - statut de la commande
+ */
+function badgeClass(status) {
+  const classes = {
+    pending:   "badge-pending",
+    accepted:  "badge-accepted",
+    completed: "badge-completed",
+    rejected:  "badge-rejected",
+  };
+  return classes[status] || "badge-pending";
+}
+
+
+function statusEmoji(status) {
+  const emojis = {
+    pending:   "⏳",
+    accepted:  "✅",
+    completed: "🎉",
+    rejected:  "❌",
+  };
+  return emojis[status] || "❓";
+}
+
+
+function statusLabel(status) {
+  const labels = {
+    pending:   "En attente",
+    accepted:  "Acceptée",
+    completed: "Terminée",
+    rejected:  "Rejetée",
+  };
+  return labels[status] || status;
+}
+
+
+/**
+ * Génère le HTML d'une carte statistique.
+ * @param {string} icon      - emoji icône
+ * @param {string} label     - libellé de la stat
+ * @param {number} value     - valeur numérique
+ * @param {string} color     - couleur du chiffre (hex)
+ * @param {string} glowColor - couleur du halo de fond (rgba)
+ */
+function statCard(icon, label, value, color, glowColor) {
+  return `
+    <div class="stat-card animate-fade-in">
+      <div class="orb" style="background:${glowColor};"></div>
+      <div class="text-2xl mb-3">${icon}</div>
+      <div class="text-3xl font-display font-extrabold mb-1" style="color:${color}">${value}</div>
+      <div class="text-xs font-semibold uppercase tracking-widest" style="color:#6B6A82">${label}</div>
+    </div>`;
+}
+
+/**
+ * Génère le HTML d'une ligne de commande compacte (pour le dashboard).
+ * @param {object} order - objet commande
+ */
+function orderRowHTML(order) {
+  return `
+    <div class="order-card p-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+             style="background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,60,172,0.2)); color:#FF6B00; border:1px solid rgba(255,107,0,0.2);">
+          ${order.customerName.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <div class="font-semibold text-sm text-app-text">${order.customerName}</div>
+          <div class="text-xs text-app-muted">${Array.isArray(order.items) ? order.items.join(", ") : order.items}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-sm" style="color:#FF6B00;">${order.totalPrice} MAD</span>
+        <span class="px-2 py-1 rounded-full text-xs font-semibold ${badgeClass(order.status)}">
+          ${statusEmoji(order.status)} ${statusLabel(order.status)}
+        </span>
+      </div>
+    </div>`;
+}
+
+
+function getNextActions(status) {
+  const actions = {
+    pending: [
+      { status: "accepted",  emoji: "✅", label: "Accepter",  color: "#10D9A0" },
+      { status: "rejected",  emoji: "❌", label: "Rejeter",   color: "#FF4444" },
+    ],
+    accepted: [
+      { status: "completed", emoji: "🎉", label: "Terminer",  color: "#A78BFA" },
+    ],
+    completed: [],
+    rejected:  [],
+  };
+  return actions[status] || [];
+}
+
+/**
+ * Génère le HTML d'une card de commande complète avec boutons d'action.
+ * @param {object} order - objet commande
+ */
+function orderCardHTML(order) {
+  const nextActions = getNextActions(order.status);
+
+  return `
+    <div class="order-card p-5 flex flex-col gap-4 animate-fade-in" id="order-${order.id}">
+
+      <!-- En-tête : avatar + nom + date + badge statut -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base"
+               style="background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,60,172,0.2)); color:#FF6B00; border:1px solid rgba(255,107,0,0.2);">
+            ${order.customerName.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <div class="font-semibold text-app-text">${order.customerName}</div>
+            <div class="text-xs text-app-muted">${order.createdAt}</div>
+          </div>
+        </div>
+        <span class="px-2 py-1 rounded-full text-xs font-bold ${badgeClass(order.status)}">
+          ${statusEmoji(order.status)} ${statusLabel(order.status)}
+        </span>
+      </div>
+
+      <!-- Articles commandés -->
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-widest mb-2 text-app-muted">Articles</div>
+        <div class="flex flex-wrap gap-1.5">
+          ${(Array.isArray(order.items) ? order.items : [order.items]).map(item =>
+            `<span class="text-xs px-2.5 py-1 rounded-lg font-medium"
+                   style="background:rgba(255,107,53,0.08); color:#2D1B0E; border:1px solid rgba(255,107,53,0.15);">${item.trim()}</span>`
+          ).join("")}
+        </div>
+      </div>
+
+      <!-- Prix total -->
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-widest text-app-muted">Total</span>
+        <span class="text-lg font-display font-bold" style="color:#FF6B00;">${order.totalPrice} MAD</span>
+      </div>
+
+      <!-- Boutons d'action (changeStatus / deleteOrder viennent de personne4.js) -->
+      <div class="flex flex-wrap gap-2 pt-2" style="border-top:1px solid rgba(255,107,53,0.12);">
+        ${nextActions.map(action => `
+          <button
+            onclick="changeStatus(${order.id}, '${action.status}')"
+            class="btn-ghost text-xs flex-1"
+            style="color:${action.color}; border-color:${action.color}40;">
+            ${action.emoji} ${action.label}
+          </button>
+        `).join("")}
+        <button
+          onclick="deleteOrder(${order.id})"
+          class="btn-ghost text-xs"
+          style="color:#FF4444; border-color:rgba(255,68,68,0.3);">
+          🗑️
+        </button>
+      </div>
+    </div>`;
+}
+
+
+async function loadDashboard() {
+  const statsContainer  = document.getElementById("stats-container");
+  const recentContainer = document.getElementById("recent-orders");
+
+  statsContainer.innerHTML  = spinnerHTML(5);
+  recentContainer.innerHTML = spinnerHTML();
+
+  try {
+    const orders = await fetchOrders();   
+    allOrders = orders;
+
+    
+    const stats = {
+      total:     orders.length,
+      pending:   orders.filter(o => o.status === "pending").length,
+      accepted:  orders.filter(o => o.status === "accepted").length,
+      completed: orders.filter(o => o.status === "completed").length,
+      rejected:  orders.filter(o => o.status === "rejected").length,
+    };
+
+  
+    statsContainer.innerHTML = `
+      ${statCard("📦", "Total",      stats.total,     "#60A5FA", "rgba(96,165,250,0.5)")}
+      ${statCard("⏳", "En attente", stats.pending,   "#FFB800", "rgba(255,184,0,0.5)")}
+      ${statCard("✅", "Acceptées",  stats.accepted,  "#10D9A0", "rgba(16,217,160,0.5)")}
+      ${statCard("🎉", "Terminées",  stats.completed, "#A78BFA", "rgba(167,139,250,0.5)")}
+      ${statCard("❌", "Rejetées",   stats.rejected,  "#FF7070", "rgba(255,68,68,0.5)")}
+    `;
+
+   
+    const recent = [...orders].reverse().slice(0, 3);
+    if (recent.length === 0) {
+      recentContainer.innerHTML = `<p class="text-app-muted text-sm">Aucune commande pour l'instant.</p>`;
+    } else {
+      recentContainer.innerHTML = recent.map(orderRowHTML).join("");
+    }
+
+  } catch (error) {
+    console.error("Erreur dashboard:", error);
+    statsContainer.innerHTML  = errorHTML();
+    recentContainer.innerHTML = "";
+  }
+}
+
+
+async function loadOrders() {
+  const container = document.getElementById("orders-container");
+  container.innerHTML = spinnerHTML(3);
+
+  try {
+    allOrders = await fetchOrders();   
+    renderOrders(allOrders);
+  } catch (error) {
+    console.error("Erreur chargement commandes:", error);
+    container.innerHTML = errorHTML();
+  }
+}
+
+/**
+ * Affiche une liste de commandes sous forme de cards.
+ * @param {Array} orders - tableau de commandes à afficher
+ */
+function renderOrders(orders) {
+  const container = document.getElementById("orders-container");
+
+  if (orders.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-3 py-16 text-center">
+        <div class="text-5xl mb-4">🍽️</div>
+        <p class="text-app-muted font-medium">Aucune commande trouvée</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = orders.map(order => orderCardHTML(order)).join("");
+}
