@@ -395,20 +395,7 @@ function renderOrders(orders) {
 
   container.innerHTML = orders.map(order => orderCardHTML(order)).join("");
 }
-// ============================================================
-//  🟥  PERSONNE 4 — SPA & INTERACTIONS
-//  Responsabilité : Navigation, formulaire, actions, initialisation
-//  Ce fichier doit être chargé APRÈS personne3.js ET personne2.js
-//  Dépend de :
-//    - fetchOrders, patchOrder, removeOrder, postOrder, fetchSettings (personne3.js)
-//    - allOrders, offlineMode (personne3.js)
-//    - loadDashboard, loadOrders, renderOrders (personne2.js)
-// ============================================================
 
-// ══════════════════════════════════════════════════════════════
-//  🧭  NAVIGATION SPA (Single Page Application)
-//  Affiche/cache les sections HTML sans recharger la page
-// ══════════════════════════════════════════════════════════════
 
 /**
  * Affiche une page et cache les autres.
