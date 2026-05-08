@@ -112,6 +112,5 @@
   "settings": {
     "restaurantName": "Foodiez",
     "contactEmail": "contact@foodiez.ma"
-  },
-  "$schema": "./node_modules/json-server/schema.json"
+  }
 }
