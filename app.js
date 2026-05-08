@@ -1,6 +1,6 @@
 
 const API_URL = "http://localhost:3000";
-
+let offlineMode =false
 let allOrders = [];
 let localIdCounter = 100;
 const MOCK_ORDERS = [
@@ -33,7 +33,7 @@ function showOfflineBanner() {
       z-index: 40;
     ">
       ⚡ Mode démo — JSON Server non détecté.
-      Lance : <code style="color:#FF6B00; background:rgba(255,107,0,0.12); padding:2px 6px; border-radius:4px;">json-server --watch db.json</code>
+      Lance : <code style="color:#FF6B00; background:rgba(255,107,0,0.12); padding:2px 6px; border-radius:4px;">json-server --watch api.json</code>
       pour activer l'API. Les données sont simulées localement.
     </div>
   `;
@@ -153,7 +153,7 @@ function errorHTML(msg = "Impossible de contacter l'API. Assurez-vous que JSON S
     <div class="col-span-3 py-10 text-center">
       <div class="text-4xl mb-3">⚠️</div>
       <p class="text-red-400 font-medium">${msg}</p>
-      <p class="text-app-muted text-sm mt-2">Lance : <code class="text-fire">json-server --watch db.json</code></p>
+      <p class="text-app-muted text-sm mt-2">Lance : <code class="text-fire">json-server --watch api.json</code></p>
     </div>`;
 }
 
@@ -402,21 +402,21 @@ function renderOrders(orders) {
  * @param {string} pageName - "dashboard", "orders", ou "new-order"
  */
 function showPage(pageName) {
-  // 1. Cacher toutes les pages
+  
   document.querySelectorAll(".page").forEach(page => {
     page.classList.remove("active");
   });
 
-  // 2. Afficher la page demandée avec animation
+  
   const target = document.getElementById("page-" + pageName);
   if (target) {
     target.classList.add("active");
     target.classList.remove("animate-fade-in");
-    void target.offsetWidth; // force reflow pour relancer l'animation CSS
+    void target.offsetWidth; 
     target.classList.add("animate-fade-in");
   }
 
-  // 3. Mettre à jour le lien actif dans la navbar
+  
   document.querySelectorAll(".nav-link").forEach(link => {
     link.classList.remove("active");
     if (link.dataset.page === pageName) {
@@ -424,34 +424,25 @@ function showPage(pageName) {
     }
   });
 
-  // 4. Charger les données selon la page affichée
-  if (pageName === "dashboard") loadDashboard();   // ← personne2.js
-  if (pageName === "orders")    loadOrders();       // ← personne2.js
+  
+  if (pageName === "dashboard") loadDashboard();   
+  if (pageName === "orders")    loadOrders();       
 }
 
-// ══════════════════════════════════════════════════════════════
-//  🔍  FILTRAGE DES COMMANDES
-//  Filtrage côté client (sans nouveau fetch)
-// ══════════════════════════════════════════════════════════════
 
-/**
- * Filtre les commandes affichées selon le select de statut.
- * Utilise allOrders déjà chargé en mémoire (pas de fetch).
- */
+
 function filterOrders() {
   const selectedStatus = document.getElementById("filter-select").value;
 
   if (selectedStatus === "all") {
-    renderOrders(allOrders);           // ← personne2.js
+    renderOrders(allOrders);           
   } else {
     const filtered = allOrders.filter(order => order.status === selectedStatus);
-    renderOrders(filtered);            // ← personne2.js
+    renderOrders(filtered);            
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-//  🔄  MODIFIER LE STATUT D'UNE COMMANDE
-// ══════════════════════════════════════════════════════════════
+
 
 /**
  * Envoie un PATCH pour changer le statut d'une commande
@@ -462,16 +453,16 @@ function filterOrders() {
  */
 async function changeStatus(id, status) {
   try {
-    await patchOrder(id, { status });   // ← personne3.js
+    await patchOrder(id, { status });   
 
-    // Recharger les données et re-rendre
-    allOrders = await fetchOrders();    // ← personne3.js
-    renderOrders(allOrders);            // ← personne2.js
-    filterOrders();                     // Réappliquer le filtre actif
+    
+    allOrders = await fetchOrders();   
+    renderOrders(allOrders);            
+    filterOrders();                     
 
-    // Mettre à jour le dashboard si c'est la page active
+    
     if (document.getElementById("page-dashboard").classList.contains("active")) {
-      await loadDashboard();            // ← personne2.js
+      await loadDashboard();           
     }
 
   } catch (error) {
@@ -480,9 +471,7 @@ async function changeStatus(id, status) {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-//  🗑️  SUPPRIMER UNE COMMANDE
-// ══════════════════════════════════════════════════════════════
+
 
 /**
  * Demande confirmation puis supprime la commande via l'API.
@@ -492,22 +481,15 @@ async function deleteOrder(id) {
   if (!confirm("🗑️ Supprimer cette commande ? Cette action est irréversible.")) return;
 
   try {
-    await removeOrder(id);   // ← personne3.js
-    filterOrders();          // Re-rendre avec le filtre actif
+    await removeOrder(id);   
+    filterOrders();          
   } catch (error) {
     console.error("Erreur suppression:", error);
     alert("❌ Impossible de supprimer.");
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-//  ➕  FORMULAIRE — CRÉER UNE NOUVELLE COMMANDE
-// ══════════════════════════════════════════════════════════════
 
-/**
- * Lit les champs du formulaire, valide les données,
- * puis envoie un POST à l'API.
- */
 async function submitOrder() {
   const name  = document.getElementById("input-name").value.trim();
   const items = document.getElementById("input-items").value.trim();
@@ -516,11 +498,11 @@ async function submitOrder() {
   const successMsg = document.getElementById("success-msg");
   const errorMsg   = document.getElementById("form-error-msg");
 
-  // Réinitialiser les messages
+  
   successMsg.classList.add("hidden");
   errorMsg.classList.add("hidden");
 
-  // ── Validation ──
+  
   if (!name || !items || !price) {
     errorMsg.textContent = "⚠️ Tous les champs sont obligatoires.";
     errorMsg.classList.remove("hidden");
@@ -533,7 +515,7 @@ async function submitOrder() {
     return;
   }
 
-  // ── Construire l'objet commande ──
+  
   const newOrder = {
     customerName: name,
     items: items.split(",").map(item => item.trim()).filter(item => item !== ""),
@@ -543,7 +525,7 @@ async function submitOrder() {
   };
 
   try {
-    const created = await postOrder(newOrder);   // ← personne3.js
+    const created = await postOrder(newOrder);   
 
     successMsg.textContent = `✅ Commande #${created.id} créée pour ${created.customerName} !`;
     successMsg.classList.remove("hidden");
@@ -557,25 +539,17 @@ async function submitOrder() {
   }
 }
 
-/**
- * Vide tous les champs du formulaire.
- */
+
 function resetForm() {
   document.getElementById("input-name").value  = "";
   document.getElementById("input-items").value = "";
   document.getElementById("input-price").value = "";
 }
 
-// ══════════════════════════════════════════════════════════════
-//  🦶  FOOTER DYNAMIQUE
-// ══════════════════════════════════════════════════════════════
 
-/**
- * Charge les informations du footer depuis /settings.
- */
 async function loadFooter() {
   try {
-    const settings = await fetchSettings();   // ← personne3.js
+    const settings = await fetchSettings();   
 
     document.getElementById("footer-name").textContent  = settings.restaurantName;
     document.getElementById("footer-email").textContent = settings.contactEmail;
@@ -586,19 +560,12 @@ async function loadFooter() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-//  🚀  INITIALISATION
-//  Point d'entrée de l'application
-// ══════════════════════════════════════════════════════════════
 
-/**
- * Initialise l'application au chargement de la page.
- */
 function init() {
-  loadFooter();       // Charger le footer
-  loadDashboard();    // Afficher le dashboard par défaut
+  loadFooter();       
+  loadDashboard();    
   console.log("🍽️ Foodiez Dashboard démarré !");
 }
 
-// Attendre que le DOM soit prêt avant d'initialiser
+
 document.addEventListener("DOMContentLoaded", init);

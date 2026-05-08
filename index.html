@@ -48,7 +48,7 @@
   </script>
 
   <style>
-    /* ── Dark mesh background ── */
+    
     body {
       background-color: #0D0805;
       background-image:
@@ -57,23 +57,23 @@
         radial-gradient(ellipse 50% 40% at 50% 50%, rgba(72,202,228,0.07) 0%, transparent 70%);
     }
 
-    /* ── Scrollbar ── */
+    
     ::-webkit-scrollbar { width: 5px }
     ::-webkit-scrollbar-track { background: #1A1008 }
     ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#FF6B35,#FF3D7F); border-radius: 4px }
 
-    /* ── SPA routing — toggled by app.js ── */
+    
     .page { display: none }
     .page.active { display: block }
 
-    /* ── Nav active state — added by app.js ── */
+    
     .nav-link.active {
       background: linear-gradient(135deg, #FF6B35, #FF3D7F);
       color: #fff !important;
       box-shadow: 0 0 20px rgba(255,107,53,.45);
     }
 
-    /* ── Shimmer gradient text ── */
+    
     .g-shimmer {
       background: linear-gradient(90deg,#FF6B35,#FF3D7F,#FFD23F,#48CAE4,#FF6B35);
       background-size: 200% auto;
@@ -84,7 +84,7 @@
     }
     @keyframes shimmer { 0%{background-position:0% center} 100%{background-position:200% center} }
 
-    /* ── Spinner ── */
+    
     .spinner {
       width:36px; height:36px;
       border:3px solid rgba(255,107,53,.12);
@@ -94,7 +94,7 @@
     }
     @keyframes spinArc { to{transform:rotate(360deg)} }
 
-    /* ── Dynamic card & badge classes — rendered by app.js ── */
+    
     .order-card {
       background: rgba(20,11,4,0.80);
       border: 1px solid rgba(255,107,53,0.18);
@@ -123,7 +123,7 @@
       filter:blur(35px); opacity:.40; top:-15px; right:-15px; pointer-events:none;
     }
 
-    /* ── Dark-adjusted badges ── */
+    
     .badge-pending   { background:rgba(255,210,63,.12);  color:#FFD23F; border:1px solid rgba(255,210,63,.30) }
     .badge-accepted  { background:rgba(56,193,114,.10);  color:#4ADE80; border:1px solid rgba(56,193,114,.28) }
     .badge-completed { background:rgba(72,202,228,.10);  color:#48CAE4; border:1px solid rgba(72,202,228,.28) }
@@ -133,11 +133,11 @@
 
 <body class="font-body min-h-screen flex flex-col text-app-text">
 
-  <!-- ══ NAVBAR ══ -->
+  
   <nav class="sticky top-0 z-50 backdrop-blur-xl border-b border-[rgba(255,107,53,0.12)] bg-[rgba(13,8,5,0.88)]">
     <div class="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
 
-      <!-- Logo -->
+      
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl flex items-center justify-center text-base"
              style="background:linear-gradient(135deg,#FF6B35,#FF3D7F);box-shadow:0 0 22px rgba(255,107,53,.55);">
@@ -146,7 +146,7 @@
         <span class="font-display text-xl font-bold g-shimmer">Foodiez</span>
       </div>
 
-      <!-- Nav pills -->
+      
       <div class="flex items-center gap-1 rounded-xl p-1 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,107,53,0.14)]">
         <button onclick="showPage('dashboard')" data-page="dashboard"
           class="nav-link active text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 text-app-muted hover:text-app-text">
@@ -164,10 +164,10 @@
     </div>
   </nav>
 
-  <!-- ══ MAIN ══ -->
+  
   <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
 
-    <!-- ── PAGE DASHBOARD ── -->
+    
     <section id="page-dashboard" class="page active animate-fade-in">
 
       <div class="flex items-start justify-between mb-10">
@@ -185,14 +185,14 @@
         </div>
       </div>
 
-      <!-- Stats -->
+      
       <div id="stats-container" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
         <div class="col-span-2 md:col-span-5 flex items-center justify-center py-12">
           <div class="spinner"></div>
         </div>
       </div>
 
-      <!-- Dernières commandes -->
+     
       <div class="flex items-center gap-4 mb-6">
         <h2 class="font-display text-xl font-bold whitespace-nowrap text-app-text">Dernières commandes</h2>
         <div class="flex-1 h-px bg-gradient-to-r from-transparent via-[rgba(255,107,53,0.25)] to-transparent"></div>
@@ -200,7 +200,7 @@
       <div id="recent-orders" class="space-y-3"></div>
     </section>
 
-    <!-- ── PAGE COMMANDES ── -->
+    
     <section id="page-orders" class="page animate-fade-in">
 
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
@@ -213,7 +213,7 @@
           <p class="text-sm mt-2 text-app-muted">Gérez, filtrez et modifiez vos commandes</p>
         </div>
 
-        <!-- Filtre -->
+        
         <div class="flex items-center gap-2 rounded-xl px-4 py-2.5 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,107,53,0.16)]">
           <span class="text-xs font-medium text-app-muted">Statut :</span>
           <select id="filter-select" onchange="filterOrders()"
@@ -227,7 +227,7 @@
         </div>
       </div>
 
-      <!-- Grille commandes -->
+      
       <div id="orders-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div class="col-span-3 flex items-center justify-center py-12">
           <div class="spinner"></div>
@@ -235,7 +235,7 @@
       </div>
     </section>
 
-    <!-- ── PAGE NOUVELLE COMMANDE ── -->
+    
     <section id="page-new-order" class="page animate-fade-in">
       <div class="max-w-xl mx-auto">
 
@@ -248,11 +248,11 @@
           <p class="text-sm mt-2 text-app-muted">Remplissez les informations ci-dessous</p>
         </div>
 
-        <!-- Formulaire -->
+        
         <div class="rounded-3xl p-8 backdrop-blur-xl bg-[rgba(20,11,4,0.82)] border border-[rgba(255,107,53,0.18)]"
              style="box-shadow:0 0 60px rgba(255,107,53,.12),0 0 0 1px rgba(255,210,63,.10)">
 
-          <!-- Messages feedback -->
+          
           <div id="success-msg"
                class="hidden mb-6 p-4 rounded-xl text-sm font-medium bg-[rgba(56,193,114,0.10)] text-[#4ADE80] border border-[rgba(56,193,114,0.25)]">
             ✅ Commande créée avec succès !
@@ -263,7 +263,7 @@
           </div>
 
           <div class="space-y-6">
-            <!-- Nom client -->
+            
             <div>
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
                 Nom du client
@@ -276,7 +276,7 @@
               />
             </div>
 
-            <!-- Articles -->
+           
             <div>
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
                 Articles commandés
@@ -290,7 +290,7 @@
               <p class="text-xs mt-1.5 text-app-muted">Séparez les articles par des virgules</p>
             </div>
 
-            <!-- Prix -->
+            
             <div>
               <label class="block text-xs font-bold uppercase tracking-widest mb-2 text-app-muted">
                 Prix total (MAD)
@@ -307,7 +307,7 @@
               </div>
             </div>
 
-            <!-- Boutons -->
+            
             <div class="flex gap-3 pt-2">
               <button
                 onclick="submitOrder()"
@@ -334,7 +334,7 @@
 
   </main>
 
-  <!-- ══ FOOTER ══ -->
+  
   <footer class="border-t border-[rgba(255,107,53,0.10)] py-6 mt-6 bg-[rgba(13,8,5,0.60)]">
     <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center gap-2">
@@ -353,7 +353,7 @@
 
   <script src="app.js"></script>
 
-  <!-- Date du jour -->
+  
   <script>
     const el = document.getElementById('today-date');
     if (el) el.textContent = new Date().toLocaleDateString('fr-FR', {
