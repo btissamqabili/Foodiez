@@ -3,24 +3,32 @@
     {
       "id": "2",
       "customerName": "Fatima",
-      "items": ["Burger Classic", "Frites", "Jus d'orange"],
+      "items": [
+        "Burger Classic",
+        "Frites",
+        "Jus d'orange"
+      ],
       "totalPrice": 95,
       "status": "accepted",
       "createdAt": "2025-03-16"
     },
     {
       "customerName": "khalid",
-      "items": ["pizza"],
+      "items": [
+        "pizza"
+      ],
       "totalPrice": 222,
       "status": "pending",
       "createdAt": "2026-05-05",
       "id": "Z3XQS2xA8O4"
     },
-
     {
       "id": "3",
       "customerName": "Sara",
-      "items": ["Tacos", "Coca"],
+      "items": [
+        "Tacos",
+        "Coca"
+      ],
       "totalPrice": 70,
       "status": "completed",
       "createdAt": "2026-05-04"
@@ -28,7 +36,9 @@
     {
       "id": "4",
       "customerName": "Youssef",
-      "items": ["Pizza 4 fromages"],
+      "items": [
+        "Pizza 4 fromages"
+      ],
       "totalPrice": 110,
       "status": "pending",
       "createdAt": "2026-05-03"
@@ -36,7 +46,10 @@
     {
       "id": "5",
       "customerName": "Imane",
-      "items": ["Sandwich poulet", "Frites"],
+      "items": [
+        "Sandwich poulet",
+        "Frites"
+      ],
       "totalPrice": 60,
       "status": "rejected",
       "createdAt": "2026-05-02"
@@ -44,7 +57,10 @@
     {
       "id": "6",
       "customerName": "Omar",
-      "items": ["Burger double", "Sprite"],
+      "items": [
+        "Burger double",
+        "Sprite"
+      ],
       "totalPrice": 120,
       "status": "accepted",
       "createdAt": "2026-05-01"
@@ -52,7 +68,9 @@
     {
       "id": "7",
       "customerName": "Amina",
-      "items": ["Salade César"],
+      "items": [
+        "Salade César"
+      ],
       "totalPrice": 55,
       "status": "completed",
       "createdAt": "2026-04-30"
@@ -60,15 +78,20 @@
     {
       "id": "8",
       "customerName": "Hassan",
-      "items": ["Panini", "Jus citron"],
+      "items": [
+        "Panini",
+        "Jus citron"
+      ],
       "totalPrice": 65,
-      "status": "pending",
+      "status": "accepted",
       "createdAt": "2026-04-29"
     },
     {
       "id": "9",
       "customerName": "Nadia",
-      "items": ["Pizza Margherita"],
+      "items": [
+        "Pizza Margherita"
+      ],
       "totalPrice": 80,
       "status": "accepted",
       "createdAt": "2026-04-28"
@@ -76,7 +99,11 @@
     {
       "id": "10",
       "customerName": "Karim",
-      "items": ["Tacos XL", "Frites", "Coca"],
+      "items": [
+        "Tacos XL",
+        "Frites",
+        "Coca"
+      ],
       "totalPrice": 130,
       "status": "completed",
       "createdAt": "2026-04-27"
